@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<title>Flea Market</title>
+<style>
+     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700;900&display=swap');
+    .text {
+        border-radius: 20px;
+        font-family: 'Noto Sans KR', sans-serif;
+        position: relative;
+        margin: 3% 20%;
+        z-index: 2;
+        padding: 40px;
+        background-color: rgb(235, 167, 43);
+        color: rgb(65, 65, 65);
+    }
+
+    .title {
+        font-size: 30px;
+        color: black;
+    }
+</style>
+<div class="text">
+    <div class="title">
+        <p>Write Your Product</p>
+    </div>
+    <!-- 인코딩 타입을 추가해서 form-data의 형태로 사진을 서버에 넘겨줄 수 있게 된다 -->
+    <form action="{%url 'new'%}" method="post" enctype="multipart/form-data">
+        {%csrf_token%}
+        {{ post_form | crispy }}
+        <br>
+        <button type="submit" class="btn btn-outline-dark">추가</button>
+    </form>
+</div>
+</body>
+</html>
+
+{% endblock %}

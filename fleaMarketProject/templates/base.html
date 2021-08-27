@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+            rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+         {% load static %}
+         <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="navbar-brand" href="{% url 'home' %}">
+                                <img src="{% static '마켓로고.png' %}" width="80px" height="70px"><p>HOME</p>
+                            </a>
+                        </li>
+                        {% if not user.is_authenticated %}  <!-- 인증되지 않은 user(로그인하지 않은 user)에게만 로그인, 회원가입 버튼이 보여야 함. -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <img src="{% static 'login.png' %}" width="80px" height="70px"><p>LOGIN</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">
+                                <img src="{% static 'signup.png' %}" width="80px" height="70px"><p>SIGN UP</p>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}   <!-- 인증된 user(로그인한 user)에게만 로그아웃, 글쓰기, 메일, 쪽지함 버튼이 보여야 함. -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">
+                                <img src="{% static 'logout.png' %}" width="80px" height="70px"><p>LOGOUT</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'new' %}">
+                                <img src="{% static 'pencil_icon.png' %}" width="80px" height="70px"><p>WRITE</p>
+                            </a> <!-- new.html로 이동하는 링크 추가 -->
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if user.is_authenticated %} <!-- 로그인 성공했을 때의 화면 (user를 받아와서 인증된 user인지 아닌지 판별)-->
+                <p>{{user.address}} 거주하시는<br>{{user.nickname}}님 반갑습니다.</p>
+                {% endif %}
+            </div>
+        </nav>
+        <style>
+            body {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        </style>
+    {% block content %}
+    {% endblock %}

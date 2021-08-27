@@ -1,0 +1,157 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Noto+Sans+KR:wght@700&family=Ultra&display=swap');
+
+  table {
+      margin-right: auto;
+      margin-left: auto;
+      text-align: center;
+      width: 70%;
+      border-collapse: collapse;
+  }
+
+  td {
+      padding: 10px;
+  }
+
+  td:nth-child(1) {
+      width: 300px;
+  }
+
+  .col {
+      color: rgb(0, 0, 0);
+  }
+
+  .webtoonTitle {
+      font-size: 40px;
+      color: rgb(10, 25, 158);
+      text-shadow: 4px 4px 0px #1565C0, 8px 8px 0px #42A5F5, 12px 12px 0px #E3F2FD;
+  }
+
+  .header {
+      border-bottom: 1px solid rgb(235, 167, 43);
+  }
+
+  .subject {
+      font-size: 20px;
+  }
+
+  .detailTable {
+      background-color: rgb(235, 235, 235);
+      color: rgb(65, 65, 65);
+      border: 1px solid rgb(235, 167, 43);
+  }
+
+  .blog {
+      border-radius: 20px;
+      position: relative;
+      margin: 3% 20%;
+      z-index: 2;
+      padding: 40px;
+      background-color: rgb(235, 167, 43);
+      color: rgb(65, 65, 65);
+  }
+
+  .all {
+      font-family: 'Noto Sans KR', cursive, sans-serif;
+  }
+
+  .form {
+      border-radius: 20px;
+      font-family: 'Noto Sans KR', sans-serif;
+      position: relative;
+      margin: 3% 20%;
+      z-index: 2;
+      padding: 40px;
+      width: 60%;
+      background-color: rgb(255, 244, 244);
+      color: rgb(65, 65, 65);
+  }
+</style>
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+  {% block content %}
+  <title>Flea Market</title>
+  </head>
+  <body>
+    <h1>Detail Your Product</h1><br>
+    <div class="all">
+
+      <div class="blog">
+          <table class="detailTable">
+              {% if blogModel.image %}
+              <tr class="header">
+                  <td colspan="2">
+                      <img src={{blogModel.image.url}} alt='image' height="300px">
+                  </td>
+              </tr>
+              {% endif %}
+              <tr class="header">
+                  <td>제품명</td>
+                  <td>{{blogModel.title}}</td>
+              </tr>
+              <tr class="header">
+                <td>카테고리</td>
+                <td>{{blogModel.category}}</td>
+              </tr>
+              <tr class="header">
+                  <td>가격</td>
+                  <td>{{blogModel.price}}</td>
+                  </td>
+              </tr>
+              <tr class="header">
+                  <td>글쓴이</td>
+                  <td>{{blogModel.writer}}</td>
+              </tr>
+              <tr class="header">
+                <td>지역</td>
+                <td>{{blogModel.region}}</td>
+              </tr>
+              <tr class="header">
+                  <td>상품정보</td>
+                  <td class="text_body "> {{blogModel.content}}</textarea></td>
+              </tr>
+              {% if blogModel.file %}
+              <tr class="header">
+                <td>첨부파일</td>
+                <td>{{blogModel.get_filename}}</td>
+                <td>
+                  <a href="{{blogModel.file.url}}" download="{{blogModel.file.url}}" class="btn btn-outline-dark"
+                  tabindex="-1" role="button" aria-disabled="true">다운로드</a>
+                </td>
+              </tr>
+              {% endif %}
+          </table>
+          {{blogModel.pub_date|date:'Y-m-d H:i'}}<br><hr>
+
+          <!-- 사용자 위치 지도 -->
+          <h4>거래 위치</h4>
+          <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=8oocdxjn7q"></script>  <!-- 클라이언트 ID -->
+          <div id="map" style="width:100%;height:400px;"></div>
+        
+          <script>
+            var blog = JSON.parse("{{ blogJson|escapejs }}")
+            var map = new naver.maps.Map('map', {
+              center: new naver.maps.LatLng(blog['lat'], blog['long']),
+              zoom: 18
+            });
+          
+            var marker = new naver.maps.Marker({
+              position: new naver.maps.LatLng(blog['lat'], blog['long']),
+              map: map
+            });
+          </script>
+          <br>
+
+          {% if user == blogModel.writer %}
+          <!-- user와 작성자의 이름이 같을 경우 삭제할 수 있게 -->
+          <a href="{% url 'edit' blogModel.id %}" class="btn btn-outline-dark" tabindex="-1" role="button"
+              aria-disabled="true">수정하기</a>
+          <a href="{% url 'delete' blogModel.id %}" class="btn btn-outline-dark" tabindex="-1" role="button"
+              aria-disabled="true">삭제하기</a>
+            {%endif%}
+  
+      </div>
+
+  </body>
+</html>
+{% endblock %}

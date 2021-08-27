@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+    <title>Flea Market</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700;900&display=swap');
+      .content {
+        border-radius: 20px;
+        font-family: 'Noto Sans KR', sans-serif;
+        position: relative;
+        margin: 3% 20%;
+        z-index: 2;
+        padding: 40px;         
+        background-color: rgb(235, 167, 43);
+        color: rgb(65, 65, 65);
+      }
+    </style>
+    </head>
+    <body>
+        <div class="content">
+          <h1>Flea Market</h1>
+          <h5>당신의 중고 물품을 업로드해보세요.</h5>
+          <div class="row">
+            {% for blogRow in posts %} 
+              <div class="card m-3 border-dark" style="width: 23rem; margin: auto;">
+                <img src="{{blogRow.image_thumbnail.url}}" class="card-img-top">
+                <div class="card-body">
+                  <h3 class="card-title">{{blogRow.title}}</h3>
+                  <h6 class="card-subtitle mb-2 text-muted">{{blogRow.price}}</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">{{blogRow.region}}</li>
+                  <li class="list-group-item">{{blogRow.category}}</li>
+                  <li class="list-group-item">{{blogRow.pub_date|date:'Y-m-d H:i'}}</li>
+                  {% if blogRow.file %}
+                    <li class="list-group-item">
+                      <a href="{{blogRow.file.url}}" download="{{blogRow.file.url}}">{{blogRow.get_filename}}</a>
+                    </li>
+                  {% endif %}
+                </ul>
+                <div class="card-body">
+                  <p class="card-text">{{blogRow.summary}}</p>
+                  <a href="{%url 'detail' blogRow.id %}" class="card-link" style="font-size: large;">...more</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>  
+        </div>
+
+        {% if posts.has_previous %} <!-- paginator가 굳이 필요 없는 글이 떳을 때의 에러 방지, 이전 글이 있는지-->
+        <a href="?page=1">처음</a>
+        <a href="?page={{posts.previous_page_number}}">이전</a> <!-- 이전 글에 해당하는 페이지 수를 계수로 넘겨줌 -->
+        {% endif %}
+
+        <span>{{posts.number}}</span> <!-- 현재 보고 있는 페이지 -->
+        <span>of</span>
+        <span>{{posts.paginator.num_pages}}</span> <!-- 마지막 페이지의 수 -->
+
+        {% if posts.has_next %} <!-- 다음 글이 있는지 -->
+        <a href="?page={{posts.next_page_number}}">다음</a>
+        <a href="?page={{posts.paginator.num_pages}}">마지막</a> <!-- 마지막 페이지 -->
+        {% endif %}
+    </body>
+</html>
+{% endblock %}
